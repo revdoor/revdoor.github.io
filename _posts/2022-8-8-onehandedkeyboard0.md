@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 0-프로젝트를 시작한 이유와 과거의 진행 과정
+title: "0-프로젝트를 시작한 이유와 과거의 진행 과정"
 categories: [Project]
 use_math: true
 tags: [one_handed_keyboard]
