@@ -8,6 +8,23 @@ layout: default
   </span>
 {% endfor %}
 
+<header class="site-category">
+  <ul>
+    
+    {% assign pages_list = site.pages %}
+    {% for node in pages_list %}
+      {% if node.title != null %}
+        {% if node.layout == "category" %}
+          <li><a class="category-link {% if page.url == node.url %} active{% endif %}"
+          href="{{ site.baseurl }}{{ node.url }}">{{ node.title }}</a></li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    
+</ul>
+</header>
+
+
 <div class="posts">
   {% for post in site.posts %}
     <article class="post">
@@ -22,15 +39,19 @@ layout: default
         {% endif %}
       >
 
-      <div class="entry">
+      <span class="entry">
         {% if post.tags %}
           {% for tag in post.tags %}
             <span class="tag">{{ site.data.format[tag] }}</span>
           {% endfor %}
         {% endif %}
-      </div>
+      </span>
 
-      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
+      <span style="padding-left:15px;"></span>
+
+      {% if post.date %}
+        <span class="date"><i class="far fa-clock" aria-hidden="true"></i>Written on {{ post.date | date: "%B %e, %Y" }}</span>
+      {% endif %}
     </article>
   {% endfor %}
 </div>

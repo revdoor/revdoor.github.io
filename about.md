@@ -4,12 +4,18 @@ title: About
 permalink: /about/
 ---
 
-Some information about you!
+KAIST 20학번 재학생입니다.
 
-### More Information
+주로 파이썬을 사용해서 프로그래밍을 합니다.
 
-A place to include any other types of information that you'd like to include about yourself.
+PS의 경우, 구현과 기하에 자신이 있습니다.
+
+### 취미
+
+다양한 게임에 관심이 있습니다.
 
 ### Contact me
 
-[email@domain.com](mailto:email@domain.com)
+[revdoor@kaist.ac.kr](mailto:revdoor@kaist.ac.kr)
+
+[hun3555@gmail.com](mailto:hun3555@gmail.com)
