@@ -1,3 +1,5 @@
-ps: "#PS"
-implementation: "#Implementation"
-backtracking: "#Backtracking"
+implementation: "#구현"
+backtracking: "#백트래킹"
+greedy: "#그리디 알고리즘"
+number_theory: "#정수론"
+constructive: "#구성적"
