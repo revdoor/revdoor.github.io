@@ -1,0 +1,204 @@
+I"�)<h2 id="문제-링크">문제 링크</h2>
+
+<p><a href="https://www.acmicpc.net/problem/15524">https://www.acmicpc.net/problem/15524</a></p>
+
+<p> </p>
+
+<h2 id="문제-설명">문제 설명</h2>
+
+<p>N개의 코인이 주어집니다.</p>
+
+<p>각 코인은 시작 위치에 놓여 있으며, 끝 위치로 이동시켜야 합니다.</p>
+
+<p>각 코인은 단 한 번 움직일 수 있으며 움직일 때 반드시 시작 위치에서 끝 위치로 직선 경로로 움직여야 합니다.</p>
+
+<p>또한, 움직이는 중에 다른 코인과 부딪히면 안 됩니다.</p>
+
+<p>옮길 수 있는 가장 많은 코인의 개수를 구하면 됩니다.</p>
+
+<p> </p>
+
+<h2 id="문제-풀이">문제 풀이</h2>
+
+<p>특정 코인을 움직일 수 있는지 없는지 구하는 함수가 필요합니다.</p>
+
+<p>이를 위해서 <code class="language-plaintext highlighter-rouge">Vector</code>이라는 클래스를 정의하고 선분과 점 사이 거리를 계산하는 함수를 작성해 사용합니다.</p>
+
+<p> </p>
+
+<h3 id="1---클래스-정의">1 - 클래스 정의</h3>
+
+<p>먼저 <code class="language-plaintext highlighter-rouge">Vector</code> 클래스를 만듭니다. 내적은 <code class="language-plaintext highlighter-rouge">a ** b</code>, 외적은 <code class="language-plaintext highlighter-rouge">a // b</code>를 통해 구할 수 있도록 정의되어 있는 클래스입니다. 이때, 2차원 벡터의 외적은 CCW 값으로 정의되어 있습니다.</p>
+
+<p>(이러한 방법은 <a href="https://zigui.tistory.com/34">지구이님의 글</a>을 바탕으로 합니다)</p>
+
+<pre><code class="language-Python">class Vector:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __add__(self, other):
+        return Vector(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other):
+        return Vector(self.x - other.x, self.y - other.y)
+
+    def __pow__(self, other):
+        return self.x * other.x + self.y * other.y
+
+    def __floordiv__(self, other):
+        return self.x * other.y - self.y * other.x
+</code></pre>
+
+<p>이제 선분을 나타내기 위한 <code class="language-plaintext highlighter-rouge">Line</code> 클래스를 정의합니다. <code class="language-plaintext highlighter-rouge">Line</code> 클래스는 두 개의 <code class="language-plaintext highlighter-rouge">Vector</code> <code class="language-plaintext highlighter-rouge">u</code>와 <code class="language-plaintext highlighter-rouge">v</code>를 가지고 있으며, <code class="language-plaintext highlighter-rouge">u</code>는 시작점을 가리키는 벡터, <code class="language-plaintext highlighter-rouge">v</code>는 방향벡터입니다. <code class="language-plaintext highlighter-rouge">u+v</code>는 끝점을 가리킵니다.</p>
+
+<pre><code class="language-Python">class Line:
+    def __init__(self, u, v):
+        self.u = u
+        self.v = v
+</code></pre>
+
+<p><code class="language-plaintext highlighter-rouge">Line</code>이 직선이라고 생각했을 때 <code class="language-plaintext highlighter-rouge">Vector</code>와의 거리, 정확하게는 거리의 제곱을 구하는 함수 <code class="language-plaintext highlighter-rouge">dist</code>를 다음과 같이 정의할 수 있습니다. 이는 벡터의 성질을 이용해 다음과 같이 구할 수 있습니다.</p>
+
+<pre><code class="language-Python">    def dist(self, vec):
+        return Fraction(abs((self.u - vec) // self.v)**2, self.v ** self.v)
+</code></pre>
+
+<p> </p>
+
+<h3 id="2---선분과-점-사이의-거리-계산">2 - 선분과 점 사이의 거리 계산</h3>
+
+<p>이제 <code class="language-plaintext highlighter-rouge">Vector</code>와 <code class="language-plaintext highlighter-rouge">Line</code>의 실제 거리를 구하는 함수를 정의합니다. 이는 <code class="language-plaintext highlighter-rouge">Vector</code>와 <code class="language-plaintext highlighter-rouge">Line</code>의 위치 관계에 따라 구해야 합니다. (<code class="language-plaintext highlighter-rouge">Line</code>이 선분이기 때문에, <code class="language-plaintext highlighter-rouge">dist</code> 함수를 바로 사용할 수 없습니다.)</p>
+
+<p>다음과 같이 위치 관계를 세 가지로 나누어 생각할 수 있습니다.</p>
+
+<p><img src="/images/15524_1.png" alt="15524_1.png" /></p>
+
+<p>Case 1은 시작점 바깥쪽에 점이 위치한 경우, case 2는 시작점과 끝점 사이에 점이 위치한 경우, case 3은 끝점 바깥쪽에 점이 위치한 경우입니다.</p>
+
+<p>Case 1에서 점과 선분의 거리는 점과 시작점의 거리, case 2에서 점과 선분의 거리는 <code class="language-plaintext highlighter-rouge">dist</code>를 통해 구한 거리, case 3에서 점과 선분의 거리는 점과 끝점의 거리입니다.</p>
+
+<p> </p>
+
+<p>어떤 case에 속하는지는 벡터의 외적을 사용합니다. 먼저 선분에 수직한 벡터 d를 다음과 같이 정의합니다.</p>
+
+<pre><code class="language-Python">d = Vector(self.v.y, -self.v.x)
+</code></pre>
+
+<p>d의 방향은 다음과 같습니다.</p>
+
+<p><img src="/images/15524_2.png" alt="15524_2.png" /></p>
+
+<p> </p>
+
+<p>이제 <code class="language-plaintext highlighter-rouge">left</code>와 <code class="language-plaintext highlighter-rouge">right</code>라는 값을 다음과 같이 정의합니다.</p>
+
+<pre><code class="language-Python">left = (self.u - vec) // d
+right = (self.u + self.v - vec) // d
+</code></pre>
+
+<p>Case 1일 경우에만 <code class="language-plaintext highlighter-rouge">left &lt; 0</code>이고, case 3일 경우에만 <code class="language-plaintext highlighter-rouge">right &gt; 0</code>입니다.
+즉 <code class="language-plaintext highlighter-rouge">left</code>와 <code class="language-plaintext highlighter-rouge">right</code>의 부호를 바탕으로 case를 구분할 수 있습니다.</p>
+
+<p> </p>
+
+<p>최종적으로 점과 선분의 거리는 다음과 같은 함수로 계산할 수 있습니다.</p>
+
+<pre><code class="language-Python">    def finaldist(self, vec):
+        d = Vector(self.v.y, -self.v.x)
+        left = (self.u - vec) // d
+        right = (self.u + self.v - vec) // d
+
+        if left &lt; 0:
+            p = (self.u - vec)
+            return p ** p
+
+        if right &gt; 0:
+            p = (self.u + self.v - vec)
+            return p ** p
+
+        return self.dist(vec)
+</code></pre>
+
+<p> </p>
+
+<h3 id="3---전처리">3 - 전처리</h3>
+
+<p>지금까지의 정보를 바탕으로 전처리합니다.</p>
+
+<p>코인 정보는 [반지름, 시작점, 끝점]으로 저장해 둡니다.</p>
+
+<p> </p>
+
+<p>이제 <code class="language-plaintext highlighter-rouge">movable</code>이라는 3차원 배열을 계산할 것입니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">movable[i][j][0]</code>은 <code class="language-plaintext highlighter-rouge">j</code>번 코인을 움직이지 않았을 때 <code class="language-plaintext highlighter-rouge">i</code>번 코인을 움직일 수 있는지 여부를 <code class="language-plaintext highlighter-rouge">bool</code> 값으로, <code class="language-plaintext highlighter-rouge">movable[i][j][1]</code>은 <code class="language-plaintext highlighter-rouge">j</code>번 코인을 움직였을 때 <code class="language-plaintext highlighter-rouge">i</code>번 코인을 움직일 수 있는지 여부를 <code class="language-plaintext highlighter-rouge">bool</code> 값으로 저장하고 있습니다.</p>
+
+<pre><code class="language-Python">    movable = [[[None, None] for _ in range(n)] for _ in range(n)]
+
+    for i in range(n):
+        for j in range(n):
+            if i == j:
+                movable[i][j] = [True, True]
+
+            radius, start, end = coin_info[i]
+            line = Line(start, end-start)
+
+            dist1 = line.finaldist(coin_info[j][1])
+            dist2 = line.finaldist(coin_info[j][2])
+
+            pos1 = dist1 &gt;= (radius + coin_info[j][0])**2
+            pos2 = dist2 &gt;= (radius + coin_info[j][0])**2
+
+            movable[i][j] = [pos1, pos2]
+</code></pre>
+
+<p>특정 <code class="language-plaintext highlighter-rouge">i</code>번 동전이 움직일 수 있으려면 모든 <code class="language-plaintext highlighter-rouge">j != i</code>에 대해 <code class="language-plaintext highlighter-rouge">movable[i][j][0]</code> (<code class="language-plaintext highlighter-rouge">j</code>번 동전을 움직이지 않은 경우) 또는 <code class="language-plaintext highlighter-rouge">movable[i][j][1]</code> (<code class="language-plaintext highlighter-rouge">j</code>번 동전을 움직인 경우)가 <code class="language-plaintext highlighter-rouge">True</code>여야 합니다.</p>
+
+<p> </p>
+
+<h3 id="4---bit-dp를-통한-문제-풀이">4 - bit dp를 통한 문제 풀이</h3>
+
+<p>이제 문제를 bit dp를 이용해 해결할 수 있습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">n</code>개의 비트를 사용합니다. <code class="language-plaintext highlighter-rouge">i</code>번째 비트가 0이면 <code class="language-plaintext highlighter-rouge">i</code>번째 동전을 움직이지 않은 것, <code class="language-plaintext highlighter-rouge">i</code>번째 비트가 1이면 <code class="language-plaintext highlighter-rouge">i</code>번째 동전을 움직인 것을 나타냅니다.</p>
+
+<p>다음과 같이 정답을 찾을 수 있습니다.</p>
+
+<pre><code class="language-Python">    max_score = 0
+
+    bit_dp = [False for _ in range(2**n)]
+    bit_dp[0] = 1
+
+    bit_list = [b for b in range(n)]
+
+    for i in range(1, n+1):
+        comb = list(combinations(bit_list, i))  # i개의 bit를 뽑는다
+
+        for tupl in comb:
+            num_now = sum(2**b for b in tupl)  # 현재 상태를 나타내는 값
+
+            for b in tupl:
+                num_before = num_now ^ 2**b  # b번 비트를 0으로 바꾼 값
+
+                if bit_dp[num_before]:
+                    possible = True  # b번 동전을 마지막으로 움직여서 상태에 도달할 수 있는지 여부
+
+                    for j in range(n):
+                        if j == b:
+                            continue
+
+                        if j in tupl:
+                            if not movable[b][j][1]:
+                                possible = False
+                                break
+                        else:
+                            if not movable[b][j][0]:
+                                possible = False
+                                break
+
+                    if possible:
+                        max_score = max(max_score, i)
+                        bit_dp[num_now] = True
+</code></pre>
+:ET
