@@ -1,0 +1,110 @@
+I"�<h2 id="문제-링크">문제 링크</h2>
+
+<p><a href="https://www.acmicpc.net/problem/1853">https://www.acmicpc.net/problem/1853</a></p>
+
+<p> </p>
+
+<h2 id="문제-설명">문제 설명</h2>
+
+<p>3차원 공간에 있는 입체도형이 주어집니다.</p>
+
+<p>$xz$평면에 대한 정사영, $yz$평면에 대한 정사영이 모두 볼록다각형입니다.</p>
+
+<p>$xz$평면에 대한 정사영과 $yz$평면에 대한 정사영이 주어졌을 때, 원본 입체도형의 부피를 구하는 문제입니다.</p>
+
+<p> </p>
+
+<h2 id="문제-풀이">문제 풀이</h2>
+
+<p>주어진 입체도형을 $z=-500, z=-499, \cdots, z=-1, z=0, z=1, \cdots, z=499, z=500$의 1001개의 평면으로 전부 나눠서 생각합니다.</p>
+
+<p>각 나눠진 입체도형의 부피를 구할 수 있다면 최종적으로 전체 부피를 계산할 수 있습니다.</p>
+
+<p> </p>
+
+<p>$z=z’$일 때 $x$축 방향의 길이를 나타내는 함수를 $x(z’)$, $y$축 방향의 길이를 나타내는 함수를 $y(z’)$라고 표현합시다.</p>
+
+<p>$xz$평면에 대한 정사영에서 $z=a$일 때 $x$축 방향의 길이가 $x_1$, $z=a+1$일 때 $x$축 방향의 길이가 $x_2$, $yz$평면에 대한 정사영에서 $z=a$일 때 $y$축 방향의 길이가 $y_1$, $z=a+1$일 때 $y$축 방향의 길이가 $y_2$라고 합시다.</p>
+
+<p>또, $\Delta x = x_2 - x_1, \Delta y = y_2 - y_1$으로 둡시다.</p>
+
+<p> </p>
+
+<p>적분을 통해 부피를 구합니다.</p>
+
+<p>해당 입체도형의 부피를 $V$라고 할 때, 다음 적분식이 성립합니다.</p>
+
+\[V = \int_{z=a}^{z=a+1} x(z) \cdot y(z) dz\]
+
+<p>이때, $xz$평면에 대한 정사영, $yz$평면에 대한 정사영이 모두 볼록다각형이므로 $x(z) = x_1 + \Delta x \cdot (z - a)$, $y(z) = y_1 + \Delta y \cdot (z - a)$가 됩니다.</p>
+
+<p> </p>
+
+<p>$t = z - a$로 치환적분하여 $V$를 구합니다.</p>
+
+\[\begin{matrix}
+V &amp;=&amp; \int_{t=0}^{t=1} (x_1 + \Delta x t) \cdot (y_1 + \Delta y t) dt \\
+\, &amp;=&amp; \int_{t=0}^{t=1} x_1 y_1 + (\Delta x y_1 + \Delta y x_1) t + \Delta x \Delta y t^2 dt \\
+\, &amp;=&amp; \left[x_1 y_1 t + \frac{1}{2} (\Delta x y_1 + \Delta y x_1) t^2 + \frac{1}{3} \Delta x \Delta y t^3\right]_{t=0}^{t=1} \\
+\, &amp;=&amp; x_1 y_1 + \frac{1}{2} (\Delta x y_1 + \Delta y x_1) + \frac{1}{3} \Delta x \Delta y
+\end{matrix}\]
+
+<p> </p>
+
+<p>이제 각 $z$에 대해서 $x(z)$와 $y(z)$를 모두 구해두면 부피를 구할 수 있습니다.</p>
+
+<p>$x(z)$를 구하는 방법만 살펴봅시다. 이를 똑같이 적용해 $y(z)$도 구할 수 있습니다. 이때 $x(z)$를 저장하는 배열을 <code class="language-plaintext highlighter-rouge">length_x[z]</code>, $y(z)$를 저장하는 배열을 <code class="language-plaintext highlighter-rouge">length_y[z]</code>라고 합시다.</p>
+
+<p>정사영이 다음 그림과 같다고 합시다. (이때 축을 회전시켜 두었기 때문에, 입력 순서대로 점을 이으면 반시계방향이 됩니다)</p>
+
+<p><img src="/images/1853_1.png" alt="1853_1.png" width="50%" height="50%" class="center" /></p>
+
+<p>이 정사영은 다음과 같이 생각할 수 있습니다.</p>
+
+<p><img src="/images/1853_2.png" alt="1853_2.png" class="center" /></p>
+
+<p>따라서, 모든 선분을 확인하면서 더해줄 부분은 더해주고 빼줄 부분은 빼주면 됩니다.</p>
+
+<p>이를 구분하는 것은 $z$ 좌표가 증가하는지 감소하는지를 통해 알 수 있습니다.</p>
+
+<p> </p>
+
+<p>여기서 문제가 되는 것은 꼭짓점입니다.</p>
+
+<p>선분의 양 끝점을 매번 더해주거나 빼줄 경우 $z$ 좌표의 증감 여부가 인접한 두 선분에 대해 같은 경우에 제대로 된 결과가 나오지 않습니다.</p>
+
+<p>하나만 더해주거나 빼주는 경우에는 $z$ 좌표의 증감 여부가 변하는 경우에 제대로 된 결과가 나오지 않습니다.</p>
+
+<p>이를 해결하기 위해 선분을 확인할 때 양 끝점을 빼고 확인한 뒤 꼭짓점을 따로 처리합니다.</p>
+
+<p>선분의 시작점이 $(x_1, z_1)$, 끝점이 $(x_2, z_2)$일 때, 모든 $z=z_1, z_1+1, …, z_2-1, z_2$에 대해 $x = \frac{x_2-x_1}{z_2-z_1} (z-z_1)+x_1$입니다.</p>
+
+<p>따라서 증감 여부에 따라 이 값을 적절하게 <code class="language-plaintext highlighter-rouge">length_x[z]</code>에 더하거나 빼줍시다.</p>
+
+<p> </p>
+
+<p>그 다음 모든 세 개의 인접한 점을 확인합니다. 현재 점을 $(x_{cur}, z_{cur})$, 다음 점을 $(x_{next}, z_{next})$, 이전 점을 $(x_{bef}, z_{bef})$라고 합시다.
+(이때, 첫 번째 점의 이전 점은 마지막 점, 마지막 점의 다음 점은 첫 번째 점입니다)</p>
+
+<p>$\Delta z_1 = z_{cur} - z_{bef}, \Delta z_2 = z_{next} - z_{cur}$이라고 합시다.</p>
+
+<p>$\Delta z_1 \cdot \Delta z_2 &lt; 0$인 경우는 $z$ 좌표의 증감 여부가 변했기 때문에 현재 점의 $x(z) = 0$입니다.</p>
+
+<p>$\Delta z_1 \geq 0, \Delta z_2 \geq 0$인 경우는 빼줄 부분에 해당합니다. <code class="language-plaintext highlighter-rouge">length_x[z] -= </code>$x_{cur}$을 해 줍니다.</p>
+
+<p>$\Delta z_1 \leq 0, \Delta z_2 \leq 0$인 경우는 더해줄 부분에 해당합니다. <code class="language-plaintext highlighter-rouge">length_x[z] += </code>$x_{cur}$을 해 줍니다.</p>
+
+<p>이를 통해 <code class="language-plaintext highlighter-rouge">length_x[z]</code> 배열을 계산할 수 있습니다. 이를 똑같이 적용하여 <code class="language-plaintext highlighter-rouge">length_y[z]</code>도 계산할 수 있습니다.</p>
+
+<p> </p>
+
+<p>이후 앞서 구한 부피를 모든 $z$에 대해 계산한 후 전부 더해 최종적으로 입체도형의 부피를 구할 수 있습니다.</p>
+
+<p>$z=-500, z=-499, \cdots, z=-1, z=0, z=1, \cdots, z=499, z=500$ 대신 $z$값의 최댓값 $z_{max}$와 최솟값 $z_{min}$을 구한 뒤 $z=z_{min}, z_{min}+1, \cdots, z_{max}-1, z_{max}$에 대해서만 구하는 것으로 충분합니다.</p>
+
+<p> </p>
+
+<h2 id="관련-문제">관련 문제</h2>
+
+<p><a href="/PS/boj-3873">3873 Intersection of Two Prisms</a></p>
+:ET
