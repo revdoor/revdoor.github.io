@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "2022-8-12-boj-23170.md",
+            "file": "2022-8-13-boj-9474.md",
             "mode": "source",
             "source": true
           }
@@ -77,7 +77,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "2022-8-12-boj-23170.md",
+                "file": "2022-8-13-boj-9474.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -94,7 +94,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "2022-8-12-boj-23170.md",
+                "file": "2022-8-13-boj-9474.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -117,7 +117,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "2022-8-12-boj-23170.md"
+                "file": "2022-8-13-boj-9474.md"
               }
             }
           }
@@ -131,8 +131,10 @@
   "active": "ff51ea941e1e1476",
   "lastOpenFiles": [
     "2022-8-11-boj-1853.md",
-    "2022-8-12-boj-23170.md",
     "2022-8-11-boj-3873.md",
+    "2022-8-13-boj-9474.md",
+    "2022-8-7-boj-25399.md",
+    "2022-8-12-boj-23170.md",
     "2022-8-10-boj-1201.md"
   ]
 }
