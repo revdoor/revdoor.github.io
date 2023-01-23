@@ -1,0 +1,72 @@
+I"�<p>파이썬으로 프로그래밍을 하면서 유용하게 사용할 수 있는 코드들을 정리해 둘 생각입니다.</p>
+
+<h2 id="prefix-sum">prefix sum</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pref_sum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">pref_sum</span><span class="p">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pref_sum</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">x</span><span class="p">,</span> <span class="n">li</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>map을 사용해 반복문 없이 prefix sum을 만드는 코드를 작성할 수 있습니다.</p>
+
+<p>다만, 사용한 함수가 side effect를 가지는 impure function이기 때문에 조심할 필요가 있습니다.</p>
+
+<h3 id="functoolsreduce를-이용한-전체-xor-합-등의-계산">functools.reduce를 이용한 전체 xor 합 등의 계산</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">functools</span>
+
+<span class="n">functools</span><span class="p">.</span><span class="nb">reduce</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">iterable</span><span class="p">[,</span> <span class="n">initializer</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p>iterable의 값들을 왼쪽에서부터 (즉, 순서대로) 누적하면서 function을 적용합니다.</p>
+
+<p>function은 두 개의 인자를 가지는 함수이며, 첫 번째 인자는 누적되는 값을 저장하고 두 번째 인자는 iterable 객체로부터 값을 받아오게 됩니다.</p>
+
+<p>initializer가 주어지면 첫 번째 인자의 값을 initializer로 초기화하고, 아닐 경우 iterable의 첫 번째 값으로 초기화합니다.</p>
+
+<p>대표적인 예시로, function으로 <code class="language-plaintext highlighter-rouge">operator.add</code>를 주고 iterable이 <code class="language-plaintext highlighter-rouge">[1, 2, 3, 4, 5]</code>라면,
+계산되는 식은 <code class="language-plaintext highlighter-rouge">((((1+2)+3)+4)+5)</code>입니다.</p>
+
+<p>Haskell 등의 언어에서 등장하는 foldl과 대응되는 함수입니다.</p>
+
+<p>이를 이용해, 다음과 같은 식으로 리스트의 모든 값의 xor 등을 계산할 수 있습니다.</p>
+
+<pre><code class="language-Python">(...)
+list_xor_val = functools.reduce(operator.xor, target_list)
+(...)
+</code></pre>
+
+<h3 id="decorator를-이용한-대략적인-실행-시간-측정">decorator를 이용한 대략적인 실행 시간 측정</h3>
+
+<pre><code class="language-Python">def my_decorator(func):
+	def wrapper(*args, **kwargs):
+		# codes before executing func
+		...
+		func(*args, **kwargs)
+		# codes after executing func
+		...
+	return wrapper
+
+
+@my_decorator
+def my_func(arg1, arg2, ...):
+	...
+</code></pre>
+
+<p>데코레이터는 함수의 수정 없이 특정 동작을 추가하거나 작동 방식 등을 바꿀 수 있습니다.
+다음과 같은 데코레이터를 만들어 함수의 실행 시간을 대략적으로 측정할 수 있습니다.</p>
+
+<pre><code class="language-Python">def time_check(func):
+    def wrapper(*args, **kwargs):
+        a = time.time()
+        
+        func(*args, **kwargs)
+        
+        print(time.time() - a)
+    
+    return wrapper
+
+@time_check
+def my_func(arg1, ...):
+    ...
+</code></pre>
+:ET

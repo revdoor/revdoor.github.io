@@ -1,0 +1,101 @@
+I"/$<h2 id="개요">개요</h2>
+
+<p>파이썬으로 문제를 해결하다 보면 종종 큐가 필요한 경우들이 있습니다.</p>
+
+<p>파이썬의 Queue 라이브러리의 경우 멀티스레딩 등에 이용하기 위한 라이브러리로, 사용해보면 알 수 있지만 <strong>아주아주</strong> 느립니다.</p>
+
+<p>따라서, 일반적인 경우에 큐를 사용하려고 하면 Queue 라이브러리 말고 collections 라이브러리의 deque를 사용해야 합니다.</p>
+
+<p>collections 라이브러리의 경우 이외에도 각종 유용한 자료구조가 구현되어 있기 때문에 이번 기회에 정리해두려고 합니다.</p>
+
+<p>기본적으로, collections 라이브러리에는 유용하게 사용할 수 있는 여러 컨테이너 데이터 타입이 구현되어 있습니다.</p>
+
+<p> </p>
+
+<h2 id="deque">deque</h2>
+
+<p>데크 구현체입니다. 덱 또는 데크는 double-ended queue의 줄임말로 양방향 큐를 의미하며, 앞과 뒤 양방향에서 빠르게 요소를 추가 또는 제거할 수 있습니다.</p>
+
+<p>데크에서는 추가/제거에 걸리는 시간이 O(1)입니다. 또한, 큐 또는 스택으로 활용할 수 있습니다. (단, 스택의 경우 일반적으로는 데크를 굳이 사용하지 않고 리스트를 사용하는 것으로 충분한 경우가 많습니다)</p>
+
+<p> </p>
+
+<p><code class="language-plaintext highlighter-rouge">class collections.deque([iterable[, maxlen]])</code></p>
+
+<p>데크 선언 시 넣을 수 있는 변수값은 크게 <code class="language-plaintext highlighter-rouge">iterable</code>과 <code class="language-plaintext highlighter-rouge">maxlen</code>의 두 개로, <code class="language-plaintext highlighter-rouge">iterable</code>을 넣을 경우 해당 <code class="language-plaintext highlighter-rouge">iterable</code>의 값을 사용해 데크 객체를 만듭니다. 없을 경우 빈 데크를 만듭니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">maxlen</code>의 경우 해당 데크의 최대 크기를 정의합니다. 지정되지 않았거나 <code class="language-plaintext highlighter-rouge">None</code>일 경우 크기 제한이 없습니다. <code class="language-plaintext highlighter-rouge">maxlen</code> 값의 경우 한 번 정의한 이후에는 수정이 불가능합니다.</p>
+
+<p> </p>
+
+<p>데크는 <code class="language-plaintext highlighter-rouge">append, appendleft, clear, copy, count, extend, extendleft, index, insert, pop, popleft, remove, reverse, rotate</code> 메소드를 가집니다.</p>
+
+<p>이 중 <code class="language-plaintext highlighter-rouge">append, clear, copy, count, extend, insert, pop, remove, reverse</code> 등의 메소드는 리스트에서와 동작이 매우 유사합니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">appendleft</code>의 경우 데크 왼쪽에 요소를 추가, <code class="language-plaintext highlighter-rouge">extendleft</code>의 경우 데크 왼쪽에 순서대로 iterable의 요소를 추가 (이때 순서대로 추가하기 때문에 최종적으로 순서가 뒤집힙니다), <code class="language-plaintext highlighter-rouge">popleft</code>의 경우 데크 왼쪽에서 요소 제거 및 반환 동작을 수행합니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">rotate</code>의 경우 데크를 회전시키는데, 회전시킬 단계를 입력으로 받습니다. 입력받은 값이 양수이면 오른쪽으로 회전, 음수이면 왼쪽으로 회전시킵니다.
+오른쪽으로 회전시키는 것은 오른쪽의 원소를 순서대로 왼쪽으로 이동시키는 동작이며 왼쪽으로 회전시키는 것은 왼쪽의 원소를 순서대로 오른쪽으로 이동시키는 동작입니다.</p>
+
+<p>즉, <code class="language-plaintext highlighter-rouge">d.rotate(1)</code>은 <code class="language-plaintext highlighter-rouge">d.appendleft(d.pop())</code>과 같고, <code class="language-plaintext highlighter-rouge">d.rotate(-1)</code>은 <code class="language-plaintext highlighter-rouge">d.append(d.popleft())</code>와 같습니다.</p>
+
+<p>또한, iteration, <code class="language-plaintext highlighter-rouge">len(d)</code>, <code class="language-plaintext highlighter-rouge">reversed(d)</code>, <code class="language-plaintext highlighter-rouge">copy.copy(d)</code>, <code class="language-plaintext highlighter-rouge">copy.deepdocpy(d)</code>, pickling, <code class="language-plaintext highlighter-rouge">in</code>을 이용한 포함 여부 확인, index를 통한 접근 (<code class="language-plaintext highlighter-rouge">d[0]</code>와 같은 방식)이 모두 가능하며, 이때 index를 통한 접근은 양 끝이 아닐 경우 O(n)의 시간이 걸립니다.</p>
+
+<p>추가로 python 3.5 이후부터는 <code class="language-plaintext highlighter-rouge">__add__, __mul__, __imul__</code>이 정의되어 있어 사용할 수 있습니다.</p>
+
+<p> </p>
+
+<h2 id="defaultdict">defaultdict</h2>
+
+<p>defaultdict 클래스는 딕셔너리의 한 메소드를 오버라이드하고 인스턴스 변수 하나가 추가된 클래스입니다. 딕셔너리에 존재하는 다른 기능들은 전부 동일하며, 존재하지 않는 key와 관련된 동작이 다릅니다.</p>
+
+<p>딕셔너리의 경우 key가 존재하는지 아닌지 여부를 확인하는 코드를 작성해야 되는 경우가 많고 존재하지 않는 key를 잘못 사용하면 <code class="language-plaintext highlighter-rouge">KeyError</code>가 발생합니다.</p>
+
+<p>defaultdict의 경우 key가 존재하지 않을 경우 지정된 기본값으로 초기화됩니다.</p>
+
+<p> </p>
+
+<p><code class="language-plaintext highlighter-rouge">class collections.defaultdict(default_factory=None, /[, ...])</code></p>
+
+<p>defaultdict는 정의할 때 <code class="language-plaintext highlighter-rouge">default_factory</code>를 받습니다. 따로 정의하지 않을 경우 <code class="language-plaintext highlighter-rouge">None</code>이며, 이 경우 동작은 딕셔너리와 동일해집니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">None</code>이 아닐 경우, 딕셔너리에 존재하지 않는 key가 들어오면 이를 사용해 기본값을 만들고, 딕셔너리에 이를 집어넣게 됩니다.</p>
+
+<p>예를 들어, <code class="language-plaintext highlighter-rouge">ddict = collections.defaultdict(list)</code>와 같이 선언했을 경우, 존재하지 않는 key를 집어넣으면 기본값인 빈 리스트로 초기화됩니다.</p>
+
+<p>Python 3.9 이후부터는 merge 연산 <code class="language-plaintext highlighter-rouge">|</code>, update 연산 <code class="language-plaintext highlighter-rouge">|=</code>이 추가되어 사용할 수 있습니다.</p>
+
+<p> </p>
+
+<h2 id="userdict-userlist-userstring">UserDict, UserList, UserString</h2>
+
+<p>이 세 클래스는 각각 딕셔너리, 리스트, 문자열을 감싸는 wrapper 클래스입니다.</p>
+
+<p>딕셔너리, 리스트, 문자열에 일부 변형된 기능이나 새로운 기능을 추가할 때 사용할 수 있습니다.</p>
+
+<p>각각 초기 데이터를 인자로 전달할 수 있으며, <code class="language-plaintext highlighter-rouge">data</code> 어트리뷰트가 내용물을 저장할 때 사용하는 실제 딕셔너리, 리스트, 문자열 오브젝트입니다.</p>
+
+<p>이들 클래스를 상속한 뒤, 새로운 메소드를 정의하거나 이미 존재하는 메소드를 오버라이드하여 사용할 수 있습니다.</p>
+
+<p>예를 들어, <code class="language-plaintext highlighter-rouge">UserList</code>를 상속한 뒤 <code class="language-plaintext highlighter-rouge">pop</code>과 <code class="language-plaintext highlighter-rouge">remove</code>를 재정의해서 값 제거가 불가능한 리스트를 만들 수 있습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">class MyList(UserList)</code>를 통해 상속, <code class="language-plaintext highlighter-rouge">pop</code>과 <code class="language-plaintext highlighter-rouge">remove</code>에서 적당한 exception을 raise하는 식으로 변형할 수 있습니다.</p>
+
+<p>이 경우, 리스트에 있는 다른 동작들은 전부 정상적으로 동작합니다. (슬라이싱 등도 가능합니다)</p>
+
+<p> </p>
+
+<h2 id="namedtuple">namedtuple</h2>
+
+<p>튜플의 각 필드에 이름을 붙인 새로운 튜플 서브클래스를 만들 수 있게 해주는 팩토리 함수입니다.</p>
+
+<p>튜플의 필드를 기존 튜플처럼 index로 접근할 수도 있고, 필드 이름으로 접근할 수도 있게 해 줍니다.</p>
+
+<p>예를 들어, 필드 이름으로 <code class="language-plaintext highlighter-rouge">['x', 'y']</code>를 주었다고 생각하면, namedtuple <code class="language-plaintext highlighter-rouge">p</code>의 첫 번째 원소는 <code class="language-plaintext highlighter-rouge">p[0]</code>으로 접근 가능하면서 또한 <code class="language-plaintext highlighter-rouge">p.x</code>로도 접근이 가능합니다.</p>
+
+<p> </p>
+
+<p><code class="language-plaintext highlighter-rouge">collections.namedtuple(typename, field_names, *, rename=False, defaults=None, module=None</code></p>
+
+<p>(WIP)</p>
+:ET
