@@ -9,5 +9,4 @@ Gemfile.lock
 node_modules
 package.json
 gulpfile.js
-_config.yml
 _posts/.obsidian/
